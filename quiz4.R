@@ -71,8 +71,14 @@ testing = dat[(year(dat$date)) > 2011,]
 tstrain = ts(training$visitsTumblr)
 
 library(forecast)
-# TODO
-
+hits<-bats(tstrain)
+future<-forecast(hits, level=95,h=dim(testing)[1])
+futureComb<-cbind(testing,data.frame(future))
+futureComb$in95 <- (futureComb$Lo.95 < futureComb$visitsTumblr) & (futureComb$visitsTumblr < futureComb$Hi.95)
+summary(futureComb$in95)
+# 226 true, 9 false
+226/235
+# 0.96
 
 # Q5
 set.seed(3523)
