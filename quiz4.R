@@ -38,9 +38,9 @@ training = adData[inTrain,]
 testing = adData[-inTrain,]
 
 set.seed(62433)
-forest<-train(diagnosis~.,data=adData,method="rf")
-boost<-train(diagnosis~.,data=adData,method="gbm")
-linear<-train(diagnosis~.,data=adData,method="lda")
+forest<-train(diagnosis~.,data=training,method="rf")
+boost<-train(diagnosis~.,data=training,method="gbm")
+linear<-train(diagnosis~.,data=training,method="lda")
 fPredict <- predict(forest, testing)
 bPredict <- predict(boost, testing)
 lPredict <- predict(linear, testing)
@@ -51,3 +51,39 @@ confusionMatrix(fPredict, testing$diagnosis)
 confusionMatrix(bPredict, testing$diagnosis)
 confusionMatrix(lPredict, testing$diagnosis)
 confusionMatrix(cPredict, testing$diagnosis)
+
+#q3
+set.seed(3523)
+library(AppliedPredictiveModeling)
+data("concrete")
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+training = concrete[ inTrain, ]
+testing = concrete[ -inTrain, ]
+set.seed(233)
+concreteModel <- train(CompressiveStrength~., data=training, method="lasso")
+
+#q4
+download.file("https://d396qusza40orc.cloudfront.net/predmachlearn/gaData.csv",destfile="gaData.csv",method="libcurl")
+library(lubridate)
+dat = read.csv("gaData.csv")
+training = dat[year(dat$date) < 2012,]
+testing = dat[(year(dat$date)) > 2011,]
+tstrain = ts(training$visitsTumblr)
+
+library(forecast)
+# TODO
+
+
+# Q5
+set.seed(3523)
+library(AppliedPredictiveModeling)
+data("concrete")
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+training = concrete[inTrain,]
+testing = concrete[-inTrain,]
+set.seed(325)
+library(e1071)
+library(caret)
+mySVM<-svm(CompressiveStrength~., data=training)
+prediction<-predict(mySVM,testing)
+sqrt(mean((prediction - testing$CompressiveStrength)^2))
